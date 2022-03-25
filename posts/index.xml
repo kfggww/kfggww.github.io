@@ -17,8 +17,7 @@
       <pubDate>Tue, 22 Mar 2022 14:03:17 +0800</pubDate>
       
       <guid>http://kfggww.github.io/posts/todo/</guid>
-      <description>[TOC]
-3/22  hello world  </description>
+      <description>3/25 - 4/2  xv6代码总结  基本环境搭建  riscv gcc qemu make git   调试常用技巧  断点 调用栈 寄存器查看 变量查看 用户代码和内核代码的调试 gdb脚本   各个lab总结 对xv6中不同模块代码的理解  进程 内存 文件系统 锁 riscv处理trap的过程 驱动代码   发布blog  小程序 公众号       Important Things  xv6  代码总结 os theory 在sifive的board上实现一个microkernel   ros  ros concepts ros tools rclcpp, rclpy ros development with gazebo ros development on hardware   arm board  basic circuit 数电/模电 EDA tools arm isa using arm board do something interesting  基于现有的传感器 提供的示例教程和代码     算法 + 数学  basic data structures and algorithms  everyday work, 总结算法题目 or 研究新题目 or 总结实现经典数据结构和算法   math    </description>
     </item>
     
   </channel>
