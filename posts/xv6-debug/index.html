@@ -36,7 +36,7 @@
     </a>
     <div class="text">
       <a href="http://kfggww.github.io/"><h1>junan&#39;s blog</h1></a>
-      <h3>Description about Blog Author</h3>
+      <h3>What I cannot create I do not understand</h3>
     </div>
   </div>
   <nav>
@@ -57,7 +57,7 @@
     
     
   </strong>
-  <span> • 71 words</span>
+  <span> • 77 words</span>
   <span> • 1 minute read</span>
   
   
@@ -75,9 +75,14 @@
 </ul>
 <p>当然, 不必在精通了全部上述所列内容之后再开始对xv6的学习. 对一些知识先有一个大概的了解即可, 如果在完成实验时遇到了阻碍再去专门仔细研究, 可能反而会理解得更深入一些.</p>
 <h2 id="2-环境准备">2. 环境准备</h2>
-<h2 id="3-启动过程调试">3. 启动过程调试</h2>
-<p>xv6内核在qemu上的启动过程相对来说比较简单, xv6内核经过编译链接之后得到的是一个名为&quot;kernel&quot;的ELF文件. 启动qemu仿真器之后, &ldquo;kernel&quot;会被加载到物理内存的0x80000000地址处, RISC-V的每个hart都会从这个地址开始执行后续的指令. 注意此时hart处于M模式, 开始执行的&rdquo;_entry&quot;是使用RISC-V汇编编写而成, 主要作用是为执行后续的函数调用做准备, 程序能够完成函数调用, 需要使用&quot;栈&quot;保存函数的局部变量, 维护函数之间的调用关系连. 硬件提供了实现函数调用栈的机制, 每个RISC-V的hart都有一个sp寄存器, 即栈指针寄存器, sp保存了栈顶在内存中地址, &ldquo;_entry&quot;处的汇编代码为每个hart分别设置好了各自的sp寄存器, 内存中的栈空间是在start.c中预先分配的, &ldquo;_entry&quot;汇编代码会根据hart的id将sp指向栈空间的不同区域.</p>
-<p>xv6在qemu上启动过程中会打印出log信息, 系统初始化完成之后运行第一个进程, 该进程会fork出一个子进程并运行user目录下的shell程序. 这个shell程序将作为用户使用xv6的接口, 比如可以使用ls命令查看当前目录下的内容, 接下来我们将通过gdb调试的方式研究从用户敲入ls命令到shell执行新进程的完整过程.</p>
+<h2 id="3-调试xv6">3. 调试xv6</h2>
+<p>使用qemu启动xv6之后, init进程会fork出一个shell进程, 当用户通过终端输入字符时, 输入的字符会回显出来, 输入结束敲击回车, shell进程会解析并执行用户输入的命令, 接下来就使用gdb+qemu对这个过程进行调试.</p>
+<ul>
+<li>首先, 启动一个终端, 并启动qemu等待gdb连接.</li>
+<li>开启另一个终端, 使用gdb连接qemu.</li>
+<li>xv6内核完成初始化之后会跳转到第一个用户进程init, init进程首先尝试打开&quot;console&quot;文件, 若文件不存在则创建一个并打开, 这个打开的&quot;console&quot;文件在init进程中的文件描述符为0, 之后发起两次dup调用, 此时init进程中打开的文件描述符有0, 1, 2, 并且都指向&quot;console&quot;文件. 接下来init进程会fork出shell进程, shell进程负责解析并执行用户命令, init进程则一直等待fork出的shell进程退出, shell进程的文件描述符0, 1, 2继承自init进程.</li>
+<li>用户通过终端输入命令时, 会通过串口将字符发送到xv6内核, 并触发xv6的串口中断.</li>
+</ul>
 <h2 id="4-参考文献">4. 参考文献</h2>
 </div>
     </article>
