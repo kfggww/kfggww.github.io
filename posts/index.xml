@@ -6,10 +6,22 @@
     <description>Recent content in Posts on junan&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 22 Mar 2022 14:03:17 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 27 Mar 2022 09:23:24 +0800</lastBuildDate>
     
 	<atom:link href="http://kfggww.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Xv6 Debug</title>
+      <link>http://kfggww.github.io/posts/xv6-debug/</link>
+      <pubDate>Sun, 27 Mar 2022 09:23:24 +0800</pubDate>
+      
+      <guid>http://kfggww.github.io/posts/xv6-debug/</guid>
+      <description>1. 概述 xv6是MIT6.S081操作系统课程使用的一个教学性质的OS, 提供了针对OS不同模块的实验. 本文仅讨论支持RISC-V指令集的xv6, 调试xv6内核代码使用qemu + gdb的方式, xv6的代码使用RISC-V汇编和c语言编写, 整个工程的构建使用Makefile管理, 并且使用链接脚本控制kernel文件的链接过程, 因此, 为了能够顺利完成之后的代码实验, 需要掌握的前置知识包括但不限于:
+ RISC-V指令集. 非特权指令, 特权指令, trap, plic, &amp;hellip; c语言基础. qemu仿真器. 启动/退出, 关键启动参数的作用 gdb基本调试. 断点, 查看变量/内存/寄存器, gdb脚本, 执行流控制, 多线程程序debug, &amp;hellip; gnu make工具. 链接脚本基本概念. 完成实验不必自己写链接脚本, 但对于理解kernel文件在内存中布局很有帮助.  当然, 不必在精通了全部上述所列内容之后再开始对xv6的学习. 对一些知识先有一个大概的了解即可, 如果在完成实验时遇到了阻碍再去专门仔细研究, 可能反而会理解得更深入一些.
+2. 环境准备 3. 启动过程调试 xv6内核在qemu上的启动过程相对来说比较简单, xv6内核经过编译链接之后得到的是一个名为&amp;quot;kernel&amp;quot;的ELF文件. 启动qemu仿真器之后, &amp;ldquo;kernel&amp;quot;会被加载到物理内存的0x80000000地址处, RISC-V的每个hart都会从这个地址开始执行后续的指令. 注意此时hart处于M模式, 开始执行的&amp;rdquo;_entry&amp;quot;是使用RISC-V汇编编写而成, 主要作用是为执行后续的函数调用做准备, 程序能够完成函数调用, 需要使用&amp;quot;栈&amp;quot;保存函数的局部变量, 维护函数之间的调用关系连. 硬件提供了实现函数调用栈的机制, 每个RISC-V的hart都有一个sp寄存器, 即栈指针寄存器, sp保存了栈顶在内存中地址, &amp;ldquo;_entry&amp;quot;处的汇编代码为每个hart分别设置好了各自的sp寄存器, 内存中的栈空间是在start.c中预先分配的, &amp;ldquo;_entry&amp;quot;汇编代码会根据hart的id将sp指向栈空间的不同区域.
+xv6在qemu上启动过程中会打印出log信息, 系统初始化完成之后运行第一个进程, 该进程会fork出一个子进程并运行user目录下的shell程序. 这个shell程序将作为用户使用xv6的接口, 比如可以使用ls命令查看当前目录下的内容, 接下来我们将通过gdb调试的方式研究从用户敲入ls命令到shell执行新进程的完整过程.</description>
+    </item>
     
     <item>
       <title>TODOs</title>
@@ -17,8 +29,7 @@
       <pubDate>Tue, 22 Mar 2022 14:03:17 +0800</pubDate>
       
       <guid>http://kfggww.github.io/posts/todo/</guid>
-      <description>[TOC]
-3/22  hello world  </description>
+      <description>3/25 - 4/2  xv6代码总结  基本环境搭建  riscv gcc qemu make git   调试常用技巧  断点 调用栈 寄存器查看 变量查看 用户代码和内核代码的调试 gdb脚本   各个lab总结 对xv6中不同模块代码的理解  进程 内存 文件系统 锁 riscv处理trap的过程 驱动代码   发布blog  小程序 公众号       Important Things  xv6  代码总结 os theory 在sifive的board上实现一个microkernel   ros  ros concepts ros tools rclcpp, rclpy ros development with gazebo ros development on hardware   arm board  basic circuit 数电/模电 EDA tools arm isa using arm board do something interesting  基于现有的传感器 提供的示例教程和代码     算法 + 数学  basic data structures and algorithms  everyday work, 总结算法题目 or 研究新题目 or 总结实现经典数据结构和算法   math    </description>
     </item>
     
   </channel>

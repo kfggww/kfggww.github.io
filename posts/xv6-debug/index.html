@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content=""
+  />
+  
+    
+      <title>Xv6 Debug | junan&#39;s blog</title>
+    
+  
+  <link rel="stylesheet" href="/css/reset.css"/>
+  <link rel="stylesheet" href="/css/font.css"/>
+  <link rel="stylesheet" href="/css/smigle.css"/>
+  
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+  <meta name="msapplication-TileColor" content="#da532c">
+  <meta name="theme-color" content="#ffffff">
+</head>
+
+  <body>
+    <header>
+  <div id="brand">
+    <a class="icon-link" href="http://kfggww.github.io/">
+      <img
+        class="icon"
+        src="/images/brandIcon.svg"
+      />
+    </a>
+    <div class="text">
+      <a href="http://kfggww.github.io/"><h1>junan&#39;s blog</h1></a>
+      <h3>Description about Blog Author</h3>
+    </div>
+  </div>
+  <nav>
+    
+  </nav>
+  <hr />
+</header>
+
+    <div id="content">
+      
+  <main>
+    <article>
+      <h1>Xv6 Debug</h1>
+      <div class="post-meta">
+  <strong>
+    <span>Posted on</span>
+    <time>2022-03-27 09:23:24</time>
+    
+    
+  </strong>
+  <span> • 71 words</span>
+  <span> • 1 minute read</span>
+  
+  
+</div>
+
+      <div><h2 id="1-概述">1. 概述</h2>
+<p>xv6是MIT6.S081操作系统课程使用的一个教学性质的OS, 提供了针对OS不同模块的实验. 本文仅讨论支持RISC-V指令集的xv6, 调试xv6内核代码使用qemu + gdb的方式, xv6的代码使用RISC-V汇编和c语言编写, 整个工程的构建使用Makefile管理, 并且使用链接脚本控制kernel文件的链接过程, 因此, 为了能够顺利完成之后的代码实验, 需要掌握的前置知识包括但不限于:</p>
+<ul>
+<li>RISC-V指令集. 非特权指令, 特权指令, trap, plic, &hellip;</li>
+<li>c语言基础.</li>
+<li>qemu仿真器. 启动/退出, 关键启动参数的作用</li>
+<li>gdb基本调试. 断点, 查看变量/内存/寄存器, gdb脚本, 执行流控制, 多线程程序debug, &hellip;</li>
+<li>gnu make工具.</li>
+<li>链接脚本基本概念. 完成实验不必自己写链接脚本, 但对于理解kernel文件在内存中布局很有帮助.</li>
+</ul>
+<p>当然, 不必在精通了全部上述所列内容之后再开始对xv6的学习. 对一些知识先有一个大概的了解即可, 如果在完成实验时遇到了阻碍再去专门仔细研究, 可能反而会理解得更深入一些.</p>
+<h2 id="2-环境准备">2. 环境准备</h2>
+<h2 id="3-启动过程调试">3. 启动过程调试</h2>
+<p>xv6内核在qemu上的启动过程相对来说比较简单, xv6内核经过编译链接之后得到的是一个名为&quot;kernel&quot;的ELF文件. 启动qemu仿真器之后, &ldquo;kernel&quot;会被加载到物理内存的0x80000000地址处, RISC-V的每个hart都会从这个地址开始执行后续的指令. 注意此时hart处于M模式, 开始执行的&rdquo;_entry&quot;是使用RISC-V汇编编写而成, 主要作用是为执行后续的函数调用做准备, 程序能够完成函数调用, 需要使用&quot;栈&quot;保存函数的局部变量, 维护函数之间的调用关系连. 硬件提供了实现函数调用栈的机制, 每个RISC-V的hart都有一个sp寄存器, 即栈指针寄存器, sp保存了栈顶在内存中地址, &ldquo;_entry&quot;处的汇编代码为每个hart分别设置好了各自的sp寄存器, 内存中的栈空间是在start.c中预先分配的, &ldquo;_entry&quot;汇编代码会根据hart的id将sp指向栈空间的不同区域.</p>
+<p>xv6在qemu上启动过程中会打印出log信息, 系统初始化完成之后运行第一个进程, 该进程会fork出一个子进程并运行user目录下的shell程序. 这个shell程序将作为用户使用xv6的接口, 比如可以使用ls命令查看当前目录下的内容, 接下来我们将通过gdb调试的方式研究从用户敲入ls命令到shell执行新进程的完整过程.</p>
+<h2 id="4-参考文献">4. 参考文献</h2>
+</div>
+    </article>
+  </main>
+
+    </div>
+    <footer>
+  <hr />
+  
+  <p class="copyright">
+    Copyright © 2022
+    <a href="http://kfggww.github.io/"><strong>Blog Author</strong></a>.
+    This work is licensed under the
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a> license.
+  </p>
+  <p class="builtWith">
+    Built with
+    <a href="http://www.gohugo.io/">Hugo</a>,
+    using the theme
+    <a href="https://gitlab.com/ian-s-mcb/smigle-hugo-theme">smigle</a>,
+    which was influenced by the theme
+    <a href="https://github.com/sumnerevans/smol">smol</a>.
+  </p>
+</footer>
+
+  </body>
+</html>
